@@ -1,1 +1,676 @@
+@import "tailwindcss";
+@custom-variant dark (&:where(.dark, .dark *));
 
+@layer base {
+  :root {
+    --bg: #07071a;
+    --fg: #eef0fb;
+    --mut: #9aa0c3;
+    --card: rgba(20, 20, 48, 0.68);
+    --card-border: rgba(160, 150, 255, 0.18);
+    --ac: #ff3d3d;
+    --ac2: #ffb347;
+    --tr: #7a4a22;
+    --lf: #3ddc84;
+    --tree-trunk: #6b4020;
+    --wood-board-bg: repeating-linear-gradient(0deg, #8a5a2b 0 8px, #7a4c22 8px 10px);
+    --wood-border: #4a2a10;
+    --rope-color: #d9b87a;
+  }
+
+  html {
+    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    scroll-behavior: smooth;
+  }
+
+  h1, h2, h3, h4, .font-display {
+    font-family: 'Outfit', 'Plus Jakarta Sans', sans-serif;
+  }
+
+  code, pre, .font-mono {
+    font-family: 'JetBrains Mono', monospace;
+  }
+}
+
+/* =========================================================================
+   3D GYROSCOPE ORB & 3D SPATIAL PERSPECTIVE STYLES
+   ========================================================================= */
+
+.perspective-1000 {
+  perspective: 1000px;
+}
+
+.preserve-3d {
+  transform-style: preserve-3d;
+}
+
+.orb-container {
+  height: 380px;
+  perspective: 900px;
+  display: grid;
+  place-items: center;
+  position: relative;
+}
+
+.orb-spatial {
+  position: relative;
+  width: 280px;
+  height: 280px;
+  transform-style: preserve-3d;
+  transition: transform 0.15s ease-out;
+}
+
+/* Orbiting 3D Rings */
+.rg-ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 2px solid #ff3d3d;
+  box-shadow: 0 0 35px rgba(255, 61, 61, 0.45);
+  animation: rotate-ring 9s linear infinite;
+  pointer-events: none;
+}
+
+.rg-ring:nth-child(2) {
+  border-color: #ffb347;
+  animation-duration: 13s;
+  inset: 24px;
+}
+
+.rg-ring:nth-child(3) {
+  border-style: dashed;
+  border-color: #3ddc84;
+  animation-duration: 17s;
+  inset: -26px;
+}
+
+@keyframes rotate-ring {
+  from {
+    transform: rotateX(70deg) rotateZ(0deg);
+  }
+  to {
+    transform: rotateX(70deg) rotateZ(360deg);
+  }
+}
+
+/* Glowing 3D Central Core Sphere */
+.orb-core {
+  position: absolute;
+  inset: 50px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 56px;
+  font-weight: 800;
+  color: #fff;
+  background: radial-gradient(circle at 30% 25%, #ffb347, #ff3d3d 60%, #4a0a14);
+  box-shadow: 0 0 80px rgba(255, 61, 61, 0.65);
+  transform: translateZ(40px);
+  user-select: none;
+  overflow: hidden;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+/* Floating 3D Depth Chips */
+.spatial-chip {
+  position: absolute;
+  padding: 8px 16px;
+  border-radius: 9999px;
+  background: rgba(20, 20, 48, 0.85);
+  border: 1px solid rgba(160, 150, 255, 0.3);
+  font-size: 12.5px;
+  font-weight: 700;
+  color: #fff;
+  backdrop-filter: blur(12px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.45);
+  animation: float-chip 4s ease-in-out infinite;
+  white-space: nowrap;
+  user-select: none;
+}
+
+@keyframes float-chip {
+  50% {
+    transform: translateZ(85px) translateY(-12px);
+  }
+}
+
+/* 3D Tilt Card Styling */
+.tilt-card {
+  transition: transform 0.15s ease-out, border-color 0.3s ease, box-shadow 0.3s ease;
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+.tilt-card:hover {
+  box-shadow: 0 20px 50px rgba(255, 61, 61, 0.15);
+}
+
+/* Floating Side Navigation Dock */
+#side-dock {
+  position: fixed;
+  right: 18px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 60;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px 8px;
+  border-radius: 36px;
+  background: rgba(20, 20, 48, 0.75);
+  border: 1px solid rgba(160, 150, 255, 0.25);
+  backdrop-filter: blur(16px);
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5);
+}
+
+#side-dock a {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  text-decoration: none;
+  font-size: 18px;
+  transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+#side-dock a:hover {
+  background: linear-gradient(135deg, #ff3d3d, #ffb347);
+  transform: scale(1.18);
+  box-shadow: 0 8px 20px rgba(255, 61, 61, 0.4);
+}
+
+@media (max-width: 768px) {
+  #side-dock {
+    top: auto;
+    bottom: calc(14px + env(safe-area-inset-bottom, 0px));
+    right: 50%;
+    transform: translateX(50%);
+    flex-direction: row;
+    padding: 6px 14px;
+    border-radius: 9999px;
+  }
+}
+
+/* =========================================================================
+   Central Journey Tree Architecture & Wooden Signboard System
+   ========================================================================= */
+
+.jt {
+  position: relative;
+  padding: 310px 0 40px;
+  --cx: 50%;
+  width: 100%;
+}
+
+/* Continuous Central Tree Trunk */
+.jt::before {
+  content: "";
+  position: absolute;
+  left: var(--cx);
+  margin-left: -32px;
+  width: 64px;
+  top: 220px;
+  bottom: 50px;
+  background: repeating-linear-gradient(90deg, #3b200c 0 6px, #6b4020 6px 14px, #4a2a10 14px 20px);
+  clip-path: polygon(24% 0, 76% 0, 100% 100%, 0 100%);
+  z-index: 1;
+  box-shadow: 0 0 25px rgba(0, 0, 0, 0.4);
+  border-radius: 4px;
+}
+
+/* Canopy on Top of Tree */
+.canopy {
+  position: absolute;
+  left: 50%;
+  top: 10px;
+  width: min(840px, 98%);
+  height: 340px;
+  transform: translateX(-50%);
+  pointer-events: none;
+  z-index: 3;
+}
+
+.canopy i {
+  position: absolute;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  opacity: 0.94;
+  box-shadow: inset -6px -8px 18px rgba(0, 0, 0, 0.45);
+  animation: leaf-sway 5s ease-in-out infinite alternate;
+}
+
+@keyframes leaf-sway {
+  to {
+    transform: translate(-50%, -50%) rotate(8deg) scale(1.06);
+  }
+}
+
+/* Main Wooden Signboard Hanging from Canopy */
+.board {
+  position: absolute;
+  left: 50%;
+  top: 135px;
+  transform: translateX(-50%);
+  z-index: 6;
+  padding: 12px 36px;
+  font-weight: 800;
+  letter-spacing: 3px;
+  font-size: clamp(16px, 3.4vw, 24px);
+  color: #fff3d6;
+  background: repeating-linear-gradient(0deg, #8a5a2b 0 8px, #7a4c22 8px 10px);
+  border: 3px solid #4a2a10;
+  border-radius: 10px;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.55);
+  text-shadow: 0 2px 0 #3a1e08;
+  white-space: nowrap;
+}
+
+.board::before,
+.board::after {
+  content: "";
+  position: absolute;
+  bottom: 100%;
+  width: 3px;
+  height: 60px;
+  background: #d9b87a;
+  box-shadow: 1px 0 2px rgba(0, 0, 0, 0.3);
+}
+
+.board::before {
+  left: 18%;
+}
+
+.board::after {
+  right: 18%;
+}
+
+/* 3-Column Milestone Row (Left Card | Center Trunk & Fruit | Right Card) */
+.jr {
+  display: grid;
+  grid-template-columns: 1fr 150px 1fr;
+  align-items: center;
+  margin: 16px 0;
+  min-height: 110px;
+  position: relative;
+  z-index: 4;
+}
+
+.jc {
+  grid-row: 1;
+  transition: all 0.85s cubic-bezier(0.2, 1.2, 0.4, 1);
+  transform-style: preserve-3d;
+}
+
+/* 3D Perspective fold when unpicked */
+.anim .jr:not(.on):not(.hd) .jc.L {
+  opacity: 0.2;
+  transform: perspective(900px) rotateY(-40deg) translateX(-30px);
+  pointer-events: none;
+}
+
+.anim .jr:not(.on):not(.hd) .jc.R {
+  opacity: 0.2;
+  transform: perspective(900px) rotateY(40deg) translateX(30px);
+  pointer-events: none;
+}
+
+.jr.on .jc {
+  opacity: 1;
+  transform: perspective(900px) rotateY(0deg) translateX(0);
+  pointer-events: auto;
+}
+
+.jc.L {
+  grid-column: 1;
+  text-align: right;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.jc.R {
+  grid-column: 3;
+  text-align: left;
+  display: flex;
+  justify-content: flex-start;
+}
+
+/* Center Branching Junction */
+.jm {
+  grid-column: 2;
+  grid-row: 1;
+  position: relative;
+  height: 60px;
+}
+
+.jm .br {
+  position: absolute;
+  top: 50%;
+  height: 14px;
+  margin-top: -7px;
+  border-radius: 8px;
+  background: linear-gradient(#7a4a22, #3f2410);
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.4);
+}
+
+.jm .bl {
+  left: 30px;
+  right: 75px;
+  transform: rotate(-6deg);
+  transform-origin: right;
+}
+
+.jm .brr {
+  left: 75px;
+  right: 30px;
+  transform: rotate(6deg);
+  transform-origin: left;
+}
+
+.jm .br::after {
+  content: "🍃🍃";
+  position: absolute;
+  top: -19px;
+  left: 10px;
+  font-size: 16px;
+  letter-spacing: 12px;
+}
+
+.hm .br {
+  height: 28px;
+  margin-top: -14px;
+}
+
+.hm .bl {
+  left: 0;
+}
+
+.hm .brr {
+  right: 0;
+}
+
+/* Fruit Year Node on the Branch */
+.fr {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 11px;
+  font-weight: 700;
+  color: #fff;
+  background: radial-gradient(circle at 30% 30%, #b0702f, #5a2d0e);
+  position: absolute;
+  top: 50%;
+  margin-top: -25px;
+  z-index: 5;
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.4);
+  animation: fruit-sway 3.2s ease-in-out infinite;
+  transform-origin: top;
+  cursor: pointer;
+  transition: transform 0.2s, background 0.4s, box-shadow 0.4s;
+}
+
+.fr:hover {
+  transform: scale(1.15);
+}
+
+.fr::before {
+  content: "";
+  position: absolute;
+  top: -12px;
+  width: 3px;
+  height: 14px;
+  background: #3ddc84;
+}
+
+.fl {
+  left: 2px;
+}
+
+.fq {
+  right: 2px;
+}
+
+.jr.on .fr {
+  animation: fruit-pick 0.8s forwards;
+  background: radial-gradient(circle at 30% 30%, #ffb347, #ff3d3d);
+  box-shadow: 0 0 28px rgba(255, 61, 61, 0.85);
+}
+
+@keyframes fruit-sway {
+  50% {
+    transform: rotate(7deg);
+  }
+}
+
+@keyframes fruit-pick {
+  40% {
+    transform: scale(1.4);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+
+/* Hanging Signboard Headers: EDUCATION ◄ and ► EXPERIENCE */
+.hg {
+  position: relative;
+  padding-top: 28px;
+  display: inline-block;
+  filter: drop-shadow(0 8px 12px rgba(0, 0, 0, 0.4));
+}
+
+.hg::before,
+.hg::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  width: 3px;
+  height: 30px;
+  background: #d9b87a;
+}
+
+.hg::before {
+  left: 22%;
+}
+
+.hg::after {
+  right: 22%;
+}
+
+.sign {
+  padding: 12px 28px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  color: #fff3d6;
+  background: repeating-linear-gradient(0deg, #8a5a2b 0 8px, #7a4c22 8px 10px);
+  text-shadow: 0 2px 0 #3a1e08;
+  border-radius: 6px;
+  border: 2px solid #4a2a10;
+}
+
+/* Directional Arrow Clip Paths */
+.sl {
+  clip-path: polygon(0 50%, 14% 0, 100% 0, 100% 100%, 14% 100%);
+  padding-left: 42px;
+}
+
+.sr {
+  clip-path: polygon(0 0, 86% 0, 100% 50%, 86% 100%, 0 100%);
+  padding-right: 42px;
+}
+
+/* Stylized Branch Signboard Cards */
+.branch-card {
+  position: relative;
+  max-width: 420px;
+  width: 100%;
+  border-radius: 20px;
+  padding: 20px 24px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  transition: transform 0.25s ease-out, box-shadow 0.25s, border-color 0.25s;
+}
+
+.dark .branch-card {
+  background: rgba(15, 17, 38, 0.85);
+  backdrop-filter: blur(14px);
+  border: 1px solid rgba(160, 150, 255, 0.2);
+  box-shadow: 0 16px 45px rgba(0, 0, 0, 0.5);
+}
+
+/* Connecting Branch Stub on Card */
+.jc.L .branch-card::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  right: -46px;
+  width: 46px;
+  height: 6px;
+  border-radius: 4px;
+  background: #7a4a22;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.jc.R .branch-card::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: -46px;
+  width: 46px;
+  height: 6px;
+  border-radius: 4px;
+  background: #7a4a22;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* The Animated Monkey */
+#mk-climber {
+  position: absolute;
+  font-size: 46px;
+  transform: translate(-50%, -50%);
+  z-index: 8;
+  filter: drop-shadow(0 8px 12px rgba(0, 0, 0, 0.5));
+  pointer-events: none;
+  transition: top 1.05s ease-in-out, left 0.8s ease-in-out;
+  animation: monkey-wobble 0.5s ease-in-out infinite alternate;
+}
+
+@keyframes monkey-wobble {
+  to {
+    rotate: 12deg;
+  }
+}
+
+#mk-climber.done {
+  animation: none;
+}
+
+/* Grassy Earthen Mound at Bottom */
+.ground {
+  height: 95px;
+  margin: 0 -30px;
+  position: relative;
+  z-index: 2;
+  background: radial-gradient(ellipse at 50% 30%, #2fa75a, #14562f 68%, transparent 70%);
+}
+
+/* Responsive Mobile Layout */
+@media (max-width: 768px) {
+  .jt {
+    --cx: 32px;
+    padding-top: 290px;
+  }
+
+  .jt::before {
+    width: 44px;
+    margin-left: -22px;
+  }
+
+  .jr {
+    grid-template-columns: 64px 1fr;
+  }
+
+  .jc.L,
+  .jc.R {
+    grid-column: 2;
+    text-align: left;
+    display: block;
+  }
+
+  .jm {
+    grid-column: 1;
+  }
+
+  .jm .br {
+    display: none;
+  }
+
+  .jm .fr {
+    left: 4px;
+    right: auto;
+  }
+
+  .jc.L .branch-card::after,
+  .jc.R .branch-card::after {
+    left: -28px !important;
+    right: auto !important;
+    width: 28px !important;
+  }
+
+  .jr.hd {
+    display: block;
+    padding-left: 64px;
+  }
+
+  .hd .jm {
+    display: none;
+  }
+
+  .hd .jc {
+    display: block;
+    margin-bottom: 12px;
+  }
+
+  .canopy {
+    left: 0;
+    transform: none;
+    width: 100%;
+  }
+
+  .board {
+    left: 12px;
+    transform: none;
+  }
+}
+
+/* Custom scrollbars */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.3);
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(148, 163, 184, 0.5);
+}
+
+/* ===== Polish layer ===== */
+.spotlight{position:fixed;top:0;left:0;width:500px;height:500px;border-radius:50%;pointer-events:none;z-index:1;
+  background:radial-gradient(circle,rgba(255,90,90,.14),rgba(255,179,71,.06) 45%,transparent 70%);will-change:transform;mix-blend-mode:screen}
+.aurora{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.aurora i{position:absolute;width:55vmax;height:55vmax;border-radius:50%;filter:blur(90px);opacity:.22;animation:drift 22s ease-in-out infinite alternate}
+.aurora i:nth-child(1){background:#ff3d3d;top:-20%;left:-10%}
+.aurora i:nth-child(2){background:#7a5cff;bottom:-25%;right:-10%;animation-duration:28s}
+.aurora i:nth-child(3){background:#ffb347;top:35%;left:40%;opacity:.12;animation-duration:34s}
+@keyframes drift{to{transform:translate3d(8vw,-6vh,0) scale(1.15)}}
+::selection{background:rgba(255,61,61,.3)}
+::-webkit-scrollbar{width:10px}::-webkit-scrollbar-thumb{background:linear-gradient(#ff3d3d,#ffb347);border-radius:9px}
+:focus-visible{outline:2px solid #ffb347;outline-offset:3px;border-radius:6px}
+.tilt-card{transition:box-shadow .3s}.tilt-card:hover{box-shadow:0 25px 60px -20px rgba(255,61,61,.35)}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}
